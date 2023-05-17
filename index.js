@@ -4,6 +4,7 @@ import express from "express";
 import { connectToDB } from "./config/db.config.js";
 import { uploadImgRouter } from "./routes/uploadImage.routes.js";
 import { userRouter } from "./routes/user.routes.js";
+import { postRouter } from "./routes/post.routes.js"
 
 dotenv.config();
 connectToDB();
@@ -16,6 +17,7 @@ app.use(express.json());
 
 
 app.use(`/api/user`, userRouter);
+app.use("/post", postRouter)
 app.use(`/api/uploadImage`, uploadImgRouter);
 
 app.listen(Number(process.env.PORT), () => {
