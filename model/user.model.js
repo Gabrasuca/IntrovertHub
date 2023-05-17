@@ -2,6 +2,8 @@ import { Schema, model } from "mongoose";
 
 const userSchema = new Schema({
   name: { type: String, required: true, trim: true },
+  work: { type: String, required: true, trim: true},
+  location: { type: String, required: true, trim: true},
   email: {
     type: String,
     required: true,
@@ -12,6 +14,8 @@ const userSchema = new Schema({
   passwordHash: { type: String, required: true },
   role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
   createdAt: { type: Date, default: Date.now() },
+  friends: [{type:Types.ObjectId, ref: "User"}],
+
 });
 
 export const UserModel = model("User", userSchema);

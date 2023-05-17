@@ -39,6 +39,25 @@ userRouter.post("/signup", async (req, res) => {
   }
 });
 
+userRouter.put('add-friend', async (req, res)=>{
+
+  const {friends} = req.body;
+
+   try { friends = await UserModel.findOneAndUpdate(
+    {_id:req.params.id},
+    {$push: {friends: req.user._id}},
+    {runValidators: true, new: true},
+    )
+    const numberOfFriends = friends.length;
+
+    }catch(e){
+    console.error(e);
+    return res.status(400).json(e);
+  }
+
+
+})
+
 userRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
