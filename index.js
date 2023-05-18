@@ -5,6 +5,7 @@ import { connectToDB } from "./config/db.config.js";
 import { uploadImgRouter } from "./routes/uploadImage.routes.js";
 import { userRouter } from "./routes/user.routes.js";
 import { postRouter } from "./routes/post.routes.js"
+import {schoolRouter} from "./routes/school.routes.js"
 
 dotenv.config();
 connectToDB();
@@ -17,8 +18,9 @@ app.use(express.json());
 
 
 app.use(`/api/user`, userRouter);
-app.use("/post", postRouter)
+app.use("/api/post", postRouter);
 app.use(`/api/uploadImage`, uploadImgRouter);
+app.use(`/api/schools`, schoolRouter);
 
 app.listen(Number(process.env.PORT), () => {
   console.log(`Server up and running at port ${process.env.PORT}`);
