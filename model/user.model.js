@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 const userSchema = new Schema({
   name: { type: String, required: true, trim: true },
@@ -15,6 +15,7 @@ const userSchema = new Schema({
   role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
   createdAt: { type: Date, default: Date.now() },
   friends: [{type:Types.ObjectId, ref: "User"}],
+  posts: [{types: Types.ObjectId, ref: "Post"}],
 
 });
 

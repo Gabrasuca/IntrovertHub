@@ -39,7 +39,7 @@ userRouter.post("/signup", async (req, res) => {
   }
 });
 
-userRouter.put('add-friend', async (req, res)=>{
+userRouter.put('add-friend', isAuth, async (req, res)=>{
 
   const {friends} = req.body;
 
@@ -48,8 +48,6 @@ userRouter.put('add-friend', async (req, res)=>{
     {$push: {friends: req.user._id}},
     {runValidators: true, new: true},
     )
-    const numberOfFriends = friends.length;
-
     }catch(e){
     console.error(e);
     return res.status(400).json(e);
@@ -86,6 +84,35 @@ userRouter.post("/login", async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
+  }
+});
+
+// userRouter.delete('/delete-user', isAuth, async (req, res)=>{
+//   try {
+
+//     const deletedUser = await UserModel.deleteOne()
+
+    
+//   } catch (e) {
+//     console.error(e);
+//     return res.status(400).json(e);
+//   }
+// })
+
+app.delete('/users/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.sendStatus(204);
+  } catch (error) {
+
+   return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
