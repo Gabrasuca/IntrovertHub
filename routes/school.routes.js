@@ -5,7 +5,9 @@ const schoolRouter = express.Router();
 
 schoolRouter.get("/", async (req, res) => {
         try {
-            const schools =  await SchoolModel.find()       
+            const schools =  await SchoolModel.find()
+            
+            
 
         return res.status(201).json(schools);
     } catch (e) {

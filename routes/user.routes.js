@@ -41,6 +41,7 @@ userRouter.post("/signup", async (req, res) => {
     const user = {
       ...createdUser._doc, 
       school:{
+        _id: school._id,
         name: school.name
       }
     }
@@ -71,8 +72,9 @@ userRouter.post("/login", async (req, res) => {
       );
 
       const currentUser = {
-        ...user,
+        ...user._doc,
         school:{
+          _id:school._id,
           name: school.name
         },
         token
