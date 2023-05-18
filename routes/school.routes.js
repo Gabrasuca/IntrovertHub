@@ -5,9 +5,10 @@ const schoolRouter = express.Router();
 
 schoolRouter.get("/", async (req, res) => {
         try {
-            const schools =  await SchoolModel.find()
-            
-            
+            let schools =  await SchoolModel.find()    
+            if (req.query.full){
+                schools = await SchoolModel.find().populate("users", "-passwordHash -schools -posts -school").sort("name")
+            }
 
         return res.status(201).json(schools);
     } catch (e) {
