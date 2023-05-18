@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import express from "express";
 import { generateToken } from "../config/jwt.config.js";
 import { UserModel } from "../model/user.model.js";
+import { SchoolModel } from "../model/school.model.js";
 
 const SALT_ROUNDS = 10;
 
@@ -31,8 +32,21 @@ userRouter.post("/signup", async (req, res) => {
       passwordHash: hashedPassword,
     });
 
+    const school = await SchoolModel.findOneAndUpdate(
+      { _id: createdUser.school._id }, 
+      { $push: { users: createdUser._id } },
+      { new : true, runValidators : true}
+      );
+
+    const user = {
+      ...createdUser._doc, 
+      school:{
+        name: school.name
+      }
+    }
+
     delete createdUser._doc.passwordHash;
-    return res.status(201).json(createdUser);
+    return res.status(201).json(user);
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -52,15 +66,21 @@ userRouter.post("/login", async (req, res) => {
     if (await bcrypt.compare(password, user.passwordHash)) {
       const token = generateToken(user);
 
-      return res.status(200).json({
-        user: {
-          name: user.name,
-          email: user.email,
-          _id: user._id,
-          role: user.role,
+      const school = await SchoolModel.findById(
+        user.school._id
+      );
+
+      const currentUser = {
+        ...user,
+        school:{
+          name: school.name
         },
-        token: token,
-      });
+        token
+      }
+
+      delete user._doc.passwordHash;
+
+      return res.status(200).json(currentUser);
     } else {
       return res.status(401).json({ msg: "Email ou senha invalidos." });
     }

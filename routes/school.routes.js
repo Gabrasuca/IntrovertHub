@@ -5,12 +5,6 @@ const schoolRouter = express.Router();
 
 schoolRouter.get("/", async (req, res) => {
         try {
-        //     console.log(req.currentUser);
-
-        // const post = await schoolModel.create({
-        //     ...req.body, 
-        //     creator: req.currentUser._id,
-        // });
             const schools =  await SchoolModel.find()       
 
         return res.status(201).json(schools);

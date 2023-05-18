@@ -15,7 +15,7 @@ const userSchema = new Schema({
   role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
   createdAt: { type: Date, default: Date.now() },
   posts: [{type: Types.ObjectId, ref: "Post"}],
-  school: {type: Types.ObjectId, ref: "School"}
+  school: {type: Types.ObjectId, ref: "School", required: true}
 });
 
 export const UserModel = model("User", userSchema);

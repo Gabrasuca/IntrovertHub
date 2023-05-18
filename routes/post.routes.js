@@ -28,7 +28,7 @@ postRouter.post("/", isAuth, attachCurrentUser, async (req, res) => {
 });
 
 
-postRouter.get("/my-posts", isAuth, attachCurrentUser, async (req, res) => {
+postRouter.get("/", isAuth, attachCurrentUser, async (req, res) => {
     try {
         const userPosts = await PostModel.find({creator: req.currentUser._id})
 
