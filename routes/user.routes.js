@@ -26,18 +26,31 @@ userRouter.post("/signup", async (req, res) => {
     const salt = await bcrypt.genSalt(SALT_ROUNDS);
 
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    const createdUser = await UserModel.create({
-      ...req.body,
-      passwordHash: hashedPassword,
-    });
-
-    const school = await SchoolModel.findOneAndUpdate(
-      { _id: createdUser.school._id }, 
-      { $push: { users: createdUser._id } },
-      { new : true, runValidators : true}
+    
+    let school = await SchoolModel.findOneAndUpdate(
+      { name: req.body.school }, 
+      {$setOnInsert: {name:req.body.school}},
+      { new : true, runValidators : true, upsert: true}
       );
 
+    const createdUser = await UserModel.create({
+      name: req.body.name,
+      location: req.body.location,
+      job: req.body.job,
+      school: school._id,
+      email: req.body.email,
+      password: req.body.password,
+      confirmPassword: req.body.confirmPassword,
+      passwordHash: hashedPassword,
+    });
+     school = await SchoolModel.findOneAndUpdate(
+      {_id:createdUser.school._id},
+      {$push:{users: createdUser._id}},
+      {new:true, runValidators:true}
+    )
+
+
+    
     const user = {
       ...createdUser._doc, 
       school:{
@@ -70,7 +83,6 @@ userRouter.post("/login", async (req, res) => {
       const school = await SchoolModel.findById(
         user.school._id
       );
-
       const currentUser = {
         ...user._doc,
         school:{
